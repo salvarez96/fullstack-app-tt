@@ -17,6 +17,11 @@ class ProductController extends Controller
         $this->productService = $productService;
     }
 
+    public function index()
+    {
+        return view('products');
+    }
+
     public function show()
     {
         try {
