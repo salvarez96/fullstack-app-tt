@@ -41,6 +41,11 @@ class ProductService {
         return $product->update($updatedProduct);
     }
 
+    public function deleteProduct(Product $product)
+    {
+        return $product->delete();
+    }
+
     public function getExternalImage() {
         $randomNumber = rand(1, 5);
         $url = "https://picsum.photos/v2/list?page={$randomNumber}";

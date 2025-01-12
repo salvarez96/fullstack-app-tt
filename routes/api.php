@@ -17,5 +17,3 @@ Route::prefix('v1')->group(function () {
         Route::delete('/{id}', 'destroy');
     });
 });
-
-// Route::get('/products', [ProductController::class, 'getProducts']);
