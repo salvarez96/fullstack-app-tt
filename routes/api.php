@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -16,5 +17,9 @@ Route::prefix('v1')->group(function () {
         Route::patch('/{id}', 'update');
         Route::put('/{id}', 'replace');
         Route::delete('/{id}', 'destroy');
+    });
+
+    Route::controller(CategoryController::class)->prefix('categories')->group(function () {
+        Route::get('/', 'show');
     });
 });
