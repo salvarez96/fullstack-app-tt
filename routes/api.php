@@ -13,7 +13,8 @@ Route::prefix('v1')->group(function () {
         Route::get('/', 'show');
         Route::get('/{id}', 'showProduct');
         Route::post('/', 'create');
-        Route::put('/{id}', 'update');
+        Route::patch('/{id}', 'update');
+        Route::put('/{id}', 'replace');
         Route::delete('/{id}', 'destroy');
     });
 });

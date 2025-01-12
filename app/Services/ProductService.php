@@ -35,10 +35,9 @@ class ProductService {
         ]);
     }
 
-    public function updateProduct(Request $request, Product $product)
+    public function updateOrReplaceProduct(Request $request, Product $product)
     {
-        $updatedProduct = [...$product->toArray(), ...$request->all()];
-        return $product->update($updatedProduct);
+        return $product->update($request->all());
     }
 
     public function deleteProduct(Product $product)

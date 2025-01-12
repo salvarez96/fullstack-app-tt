@@ -100,7 +100,7 @@ class ProductController extends Controller
                 return response()->json(['message' => 'Product not found'], 404);
             }
 
-            $updatedProduct = $this->productService->updateProduct($request, $product);
+            $updatedProduct = $this->productService->updateOrReplaceProduct($request, $product);
 
             if ($updatedProduct) {
                 return response()->json([
@@ -114,6 +114,39 @@ class ProductController extends Controller
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Failed to update product',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+    public function replace(Request $request, int $id) {
+        try {
+            $request->validate([
+                'name' => 'required|string',
+                'description' => 'required|string',
+                'price' => 'required|numeric',
+                'category_id' => 'required|integer|exists:categories,id',
+            ]);
+
+            $product = Product::find($id);
+
+            if (!$product) {
+                return response()->json(['message' => 'Product not found'], 404);
+            }
+
+            $replacedProduct = $this->productService->updateOrReplaceProduct($request, $product);
+
+            if ($replacedProduct) {
+                return response()->json([
+                    'message' => 'Product replaced successfully',
+                    'data' => $product
+                ], 200);
+            }
+
+            throw new Exception('Failed to replace product');
+
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Failed to replace product',
                 'error' => $e->getMessage()
             ], 500);
         }
