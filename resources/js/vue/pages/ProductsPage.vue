@@ -17,11 +17,28 @@
                 :productDescription="product.description"
             />
         </div>
+        <nav class="navigation-container" aria-label="Page navigation example">
+            <ul class="pagination">
+                <li class="page-item">
+                    <button class="page-link" @click="handlePagination('previous')" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </button>
+                </li>
+                <li class="page-item" v-for="link in products.meta?.links" :key="link.label">
+                    <button class="page-link" v-if="Number(link.label)" @click="handlePagination(link.label)">{{ link.label }}</button>
+                </li>
+                <li class="page-item">
+                    <button class="page-link" @click="handlePagination('next')" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </button>
+                </li>
+            </ul>
+        </nav>
     </div>
 </template>
 
 <script setup>
-import { onBeforeMount, computed, onMounted, ref } from 'vue';
+import { onBeforeMount, computed, onMounted, ref, onUnmounted } from 'vue';
 import { useStore } from 'vuex';
 import ProductCard from '@components/products/ProductCard.vue';
 import Filters from '@components/products/Filters.vue';
@@ -31,6 +48,7 @@ const store = useStore();
 const products = computed(() => store.state.products);
 const categories = computed(() => store.state.categories);
 const createProductForm = ref(null);
+const previousPage = ref(1);
 
 onBeforeMount(() => {
     store.dispatch('getCategories');
@@ -41,10 +59,40 @@ function handleProductForm() {
     createProductForm.value.openModal();
 }
 
+function handlePagination(pageToGo) {
+    if (pageToGo === 'previous' && products.value.links?.prev) {
+        pageToGo = products.value.meta.current_page - 1
+    } else if (pageToGo === 'next' && products.value.links?.next) {
+        pageToGo = products.value.meta.current_page + 1
+    }
+
+    if (Number(pageToGo)) {
+        console.log(products.value.links);
+        console.log(pageToGo);
+
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('page', pageToGo);
+
+        window.history.pushState({}, '', `?page=${pageToGo}`);
+
+        store.dispatch('nextProductPage', pageToGo);
+    }
+}
+
 onMounted(() => {
     console.log(products.value);
     console.log(categories.value);
+
+    const currentPage = location.search.match(/(?:page=)\d+/) ? location.search.match(/(?:page=)\d+/)[0].split('=')[1] : 1
+    previousPage.value = currentPage < 1 ? 1 : currentPage
+
+    window.addEventListener('popstate', () => handlePagination(previousPage.value))
 })
+
+onUnmounted(() => {
+    window.removeEventListener('popstate', () => handlePagination(1))
+});
+
 </script>
 
 <style lang="scss">
@@ -63,5 +111,11 @@ onMounted(() => {
     .new-product-form-button {
         margin-top: 20px;
         margin-left: 10px;
+    }
+
+    .navigation-container {
+        margin: 50px 0;
+        display: flex;
+        justify-content: center;
     }
 </style>

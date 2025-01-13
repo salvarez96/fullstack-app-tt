@@ -61,6 +61,14 @@ const productStore = createStore({
             } catch (error) {
                 throw error
             }
+        },
+        async nextProductPage({ commit }, page) {
+            try {
+                const response = await axios.get(`/api/v1/products?page=${page}`)
+                commit('setProducts', response.data)
+            } catch (error) {
+                throw error
+            }
         }
     }
 })
