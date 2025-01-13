@@ -48,25 +48,35 @@ const store = useStore();
 const products = computed(() => store.state.products);
 const categories = computed(() => store.state.categories);
 const createProductForm = ref(null);
-const previousPage = ref(1);
+const currentPage = ref(1)
 
 onBeforeMount(() => {
     store.dispatch('getCategories');
-    store.dispatch('getProducts');
+
+    setCurrentPage();
+    console.log(currentPage);
+    store.dispatch('getProducts', currentPage.value);
 });
 
 function handleProductForm() {
     createProductForm.value.openModal();
 }
 
-function handlePagination(pageToGo) {
+function setCurrentPage() {
+    currentPage.value = location.search.match(/(?:page=)\d+/) ? location.search.match(/(?:page=)\d+/)[0].split('=')[1] : 1
+}
+
+function handlePagination(pageToGo, isPopState = false) {
+    // calculate previous and next page depending on the product's available navigation links
     if (pageToGo === 'previous' && products.value.links?.prev) {
         pageToGo = products.value.meta.current_page - 1
     } else if (pageToGo === 'next' && products.value.links?.next) {
         pageToGo = products.value.meta.current_page + 1
     }
 
-    if (Number(pageToGo)) {
+    // if the navigation is done through the pagination buttons, push the new page
+    // to the browser's history as a param and then load the products for that page
+    if (Number(pageToGo) && !isPopState) {
         console.log(products.value.links);
         console.log(pageToGo);
 
@@ -75,22 +85,25 @@ function handlePagination(pageToGo) {
 
         window.history.pushState({}, '', `?page=${pageToGo}`);
 
-        store.dispatch('nextProductPage', pageToGo);
+        store.dispatch('getProducts', pageToGo);
+    }
+
+    // if navigation is done through the browser's back and forward buttons,
+    // set the current page to the one in the URL and then load the products for that page
+    if (isPopState) {
+        setCurrentPage();
+        console.log(currentPage.value, isPopState);
+        store.dispatch('getProducts', currentPage.value);
     }
 }
 
 onMounted(() => {
-    console.log(products.value);
-    console.log(categories.value);
-
-    const currentPage = location.search.match(/(?:page=)\d+/) ? location.search.match(/(?:page=)\d+/)[0].split('=')[1] : 1
-    previousPage.value = currentPage < 1 ? 1 : currentPage
-
-    window.addEventListener('popstate', () => handlePagination(previousPage.value))
+    // if user navigates through the browser's back and forward buttons, handle the pagination
+    window.addEventListener('popstate', () => handlePagination(1, true))
 })
 
 onUnmounted(() => {
-    window.removeEventListener('popstate', () => handlePagination(1))
+    window.removeEventListener('popstate', () => handlePagination(1, true))
 });
 
 </script>

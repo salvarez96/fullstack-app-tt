@@ -18,9 +18,9 @@ const productStore = createStore({
         },
     },
     actions: {
-        async getProducts({ commit }) {
+        async getProducts({ commit }, page) {
             try {
-                const response = await axios.get(`/api/v1/products`)
+                const response = await axios.get(`/api/v1/products${page ? '?page=' + page : ''}`)
                 commit('setProducts', response.data)
             } catch (error) {
                 throw error
@@ -57,19 +57,12 @@ const productStore = createStore({
                 console.log(normalizedFilters);
                 const response = await axios.get(`/api/v1/products`, { params: normalizedFilters })
                 commit('setProducts', response.data)
+                console.log(response.data);
                 return Object.keys(normalizedFilters).length ? true : false
             } catch (error) {
                 throw error
             }
         },
-        async nextProductPage({ commit }, page) {
-            try {
-                const response = await axios.get(`/api/v1/products?page=${page}`)
-                commit('setProducts', response.data)
-            } catch (error) {
-                throw error
-            }
-        }
     }
 })
 
