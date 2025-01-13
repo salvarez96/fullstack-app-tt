@@ -24,6 +24,7 @@ export default defineConfig({
             '@components': path.resolve(__dirname, 'resources/js/vue/components'),
             '@pages': path.resolve(__dirname, 'resources/js/vue/pages'),
             '@stores': path.resolve(__dirname, 'resources/js/stores'),
+            '@helpers': path.resolve(__dirname, 'resources/js/helpers'),
         },
     },
 });
