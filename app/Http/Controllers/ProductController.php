@@ -22,10 +22,17 @@ class ProductController extends Controller
         return view('products');
     }
 
-    public function show()
+    public function show(Request $request)
     {
         try {
-            $products = $this->productService->getProducts();
+            $request->validate([
+                'name' => 'string',
+                'min-price' => 'numeric',
+                'max-price' => 'numeric|gte:min-price',
+                'category-id' => 'integer|exists:categories,id',
+            ]);
+
+            $products = $this->productService->getProducts($request);
 
             if ($products->isEmpty()) {
                 return $this->jsonResponse('No products found', 404);

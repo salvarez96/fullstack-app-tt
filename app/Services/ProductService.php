@@ -14,8 +14,26 @@ class ProductService {
         $this->product = $product;
     }
 
-    public function getProducts()
+    public function getProducts(Request $request)
     {
+        if (count($request->all())) {
+            $query = $this->product->query();
+
+            if ($request->has('name')) {
+                $query->where('name', 'like', "%{$request->name}%");
+            }
+
+            if ($request->has('min-price') && $request->has('max-price')) {
+                $query->whereBetween('price', [$request['min-price'], $request['max-price']]);
+            }
+
+            if ($request->has('category-id')) {
+                $query->where('category_id', $request['category-id']);
+            }
+
+            return $query->with('category')->paginate(10);
+        }
+
         return $this->product->with('category')->paginate(10);
     }
 
