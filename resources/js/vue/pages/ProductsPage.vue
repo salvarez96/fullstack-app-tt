@@ -43,6 +43,7 @@ import { useStore } from 'vuex';
 import ProductCard from '@components/products/ProductCard.vue';
 import Filters from '@components/products/Filters.vue';
 import CreateProduct from '@components/products/CreateProduct.vue';
+import handleUrlPagination from '@helpers/handleUrlPagination'
 
 const store = useStore();
 const products = computed(() => store.state.products);
@@ -80,10 +81,7 @@ function handlePagination(pageToGo, isPopState = false) {
         console.log(products.value.links);
         console.log(pageToGo);
 
-        const currentUrl = new URL(window.location.href);
-        currentUrl.searchParams.set('page', pageToGo);
-
-        window.history.pushState({}, '', `?page=${pageToGo}`);
+        handleUrlPagination(pageToGo)
 
         store.dispatch('getProducts', {'page': pageToGo});
     }

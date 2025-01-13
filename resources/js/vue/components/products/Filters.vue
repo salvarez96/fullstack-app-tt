@@ -32,6 +32,7 @@
 <script setup>
 import { useStore } from 'vuex';
 import { computed, onBeforeMount, ref } from 'vue';
+import handleUrlPagination from '@helpers/handleUrlPagination'
 
 const store = useStore();
 const categories = computed(() => store.state.categories);
@@ -53,6 +54,8 @@ async function cleanFilters() {
     try {
         if (isFilterApplied.value) {
             await store.dispatch('getProducts', {});
+            handleUrlPagination(1)
+            isFilterApplied.value = false
         }
 
         filters.value['category-id'] = 'Selecciona una categoría';
@@ -67,6 +70,12 @@ async function cleanFilters() {
 async function handleApplyFilters() {
     try {
         const response = await store.dispatch('getProducts', filters.value);
+        handleUrlPagination(1)
+
+        if (!filters.value['category-id']) {
+            filters.value['category-id'] = 'Selecciona una categoría';
+        }
+
         isFilterApplied.value = response;
         console.log(store.state.products);
     } catch (error) {
@@ -89,7 +98,6 @@ async function handleApplyFilters() {
             margin-bottom: 10px;
         }
     }
-
 }
 
 .price-form-container {
