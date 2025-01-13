@@ -1,12 +1,14 @@
 import { createStore } from 'vuex'
 import axios from 'axios'
+import normalizeFilters from '@helpers/normalizeFilters'
 
 // Create a new store instance.
 const productStore = createStore({
     state () {
         return {
             products: [],
-            categories: []
+            categories: [],
+            filters: {}
         }
     },
     mutations: {
@@ -16,16 +18,23 @@ const productStore = createStore({
         setCategories(state, categories) {
             state.categories = categories
         },
+        setFilters(state, filters) {
+            state.filters = {...state.filters, ...filters}
+            console.log('state.filters', state.filters);
+        },
+        resetFilters(state) {
+            state.filters = {}
+        }
     },
     actions: {
-        async getProducts({ commit }, page) {
-            try {
-                const response = await axios.get(`/api/v1/products${page ? '?page=' + page : ''}`)
-                commit('setProducts', response.data)
-            } catch (error) {
-                throw error
-            }
-        },
+        // async getProducts({ commit }, page) {
+        //     try {
+        //         const response = await axios.get(`/api/v1/products${page ? '?page=' + page : ''}`)
+        //         commit('setProducts', response.data)
+        //     } catch (error) {
+        //         throw error
+        //     }
+        // },
         async getCategories({ commit }) {
             try {
                 const response = await axios.get(`/api/v1/categories`)
@@ -42,20 +51,23 @@ const productStore = createStore({
                 throw error
             }
         },
-        async filterProducts({ commit }, filters) {
+        async getProducts({ commit, state }, filters) {
             try {
-                typeof filters['category-id'] !== 'number' ? filters['category-id'] = '' : filters['category-id'];
+                let normalizedFilters = {}
 
-                const normalizedFilters = {}
+                if (!Object.keys(filters).length) {
+                    commit('resetFilters')
+                } else {
+                    normalizedFilters = normalizeFilters(filters, (filters) => {
+                        typeof filters['category-id'] !== 'number' ? filters['category-id'] = '' : filters['category-id'];
+                    })
 
-                for (const key in filters) {
-                    if (filters[key]) {
-                        normalizedFilters[key] = filters[key]
-                    }
+                    commit('setFilters', normalizedFilters)
+                    console.log('normalizedFilters', normalizedFilters);
                 }
 
-                console.log(normalizedFilters);
-                const response = await axios.get(`/api/v1/products`, { params: normalizedFilters })
+                console.log('filters', filters);
+                const response = await axios.get(`/api/v1/products`, { params: state.filters })
                 commit('setProducts', response.data)
                 console.log(response.data);
                 return Object.keys(normalizedFilters).length ? true : false

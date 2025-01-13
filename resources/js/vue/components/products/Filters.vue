@@ -41,7 +41,8 @@ const filters = ref({
     'category-id': 'Selecciona una categoría',
     'name': '',
     'min-price': '',
-    'max-price': ''
+    'max-price': '',
+    'page': 1
 });
 
 onBeforeMount(() => {
@@ -51,7 +52,7 @@ onBeforeMount(() => {
 async function cleanFilters() {
     try {
         if (isFilterApplied.value) {
-            await store.dispatch('getProducts');
+            await store.dispatch('getProducts', {});
         }
 
         filters.value['category-id'] = 'Selecciona una categoría';
@@ -65,7 +66,7 @@ async function cleanFilters() {
 
 async function handleApplyFilters() {
     try {
-        const response = await store.dispatch('filterProducts', filters.value);
+        const response = await store.dispatch('getProducts', filters.value);
         isFilterApplied.value = response;
         console.log(store.state.products);
     } catch (error) {

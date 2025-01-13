@@ -55,7 +55,7 @@ onBeforeMount(() => {
 
     setCurrentPage();
     console.log(currentPage);
-    store.dispatch('getProducts', currentPage.value);
+    store.dispatch('getProducts', {'page': currentPage.value});
 });
 
 function handleProductForm() {
@@ -85,7 +85,7 @@ function handlePagination(pageToGo, isPopState = false) {
 
         window.history.pushState({}, '', `?page=${pageToGo}`);
 
-        store.dispatch('getProducts', pageToGo);
+        store.dispatch('getProducts', {'page': pageToGo});
     }
 
     // if navigation is done through the browser's back and forward buttons,
@@ -93,7 +93,7 @@ function handlePagination(pageToGo, isPopState = false) {
     if (isPopState) {
         setCurrentPage();
         console.log(currentPage.value, isPopState);
-        store.dispatch('getProducts', currentPage.value);
+        store.dispatch('getProducts', {'page': currentPage.value});
     }
 }
 
