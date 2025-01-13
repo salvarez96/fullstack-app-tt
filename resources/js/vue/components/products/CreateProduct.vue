@@ -46,7 +46,7 @@ let modalInstance = null;
 
 const newProduct = ref({
     name: '',
-    category_id: '',
+    category_id: 'Selecciona una categoría',
     price: '',
     description: ''
 });
@@ -61,7 +61,7 @@ defineExpose({
 
 function resetNewProductValues() {
     newProduct.value.name = ''
-    newProduct.value.category_id = ''
+    newProduct.value.category_id = 'Selecciona una categoría'
     newProduct.value.price = ''
     newProduct.value.description = ''
 }
@@ -81,6 +81,15 @@ function openModal() {
 
 async function createProduct() {
     try {
+        if (newProduct.value.category_id === 'Selecciona una categoría') {
+            alert.value.style.display = 'block'
+            alert.value.innerText = 'Selecciona una categoría'
+            setTimeout(() => {
+                alert.value.style.display = 'none';
+            }, 5000)
+            return
+        }
+
         toggleSendButton.value = true;
         console.log(newProduct.value);
         await store.dispatch('createProduct', newProduct.value);
