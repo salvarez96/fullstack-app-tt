@@ -20,21 +20,31 @@ const productStore = createStore({
         },
         setFilters(state, filters) {
             state.filters = {...state.filters, ...filters}
-            console.log('state.filters', state.filters);
         },
         resetFilters(state) {
             state.filters = {}
         }
     },
     actions: {
-        // async getProducts({ commit }, page) {
-        //     try {
-        //         const response = await axios.get(`/api/v1/products${page ? '?page=' + page : ''}`)
-        //         commit('setProducts', response.data)
-        //     } catch (error) {
-        //         throw error
-        //     }
-        // },
+        async getProducts({ commit, state }, newFilters) {
+            try {
+                if (!Object.keys(newFilters).length) {
+                    commit('resetFilters')
+                } else {
+                    const normalizedFilters = normalizeFilters(newFilters, (filters) => {
+                        typeof filters['category-id'] !== 'number' ? delete filters['category-id'] : filters['category-id'];
+                    })
+
+                    commit('setFilters', normalizedFilters)
+                }
+
+                const response = await axios.get(`/api/v1/products`, { params: state.filters })
+                commit('setProducts', response.data)
+                return Object.keys(state.filters).length ? true : false
+            } catch (error) {
+                throw error
+            }
+        },
         async getCategories({ commit }) {
             try {
                 const response = await axios.get(`/api/v1/categories`)
@@ -43,34 +53,10 @@ const productStore = createStore({
                 throw error
             }
         },
-        async createProduct({ dispatch }, product) {
+        async createProduct({ dispatch, state }, product) {
             try {
                 await axios.post(`/api/v1/products`, product)
-                dispatch('getProducts')
-            } catch (error) {
-                throw error
-            }
-        },
-        async getProducts({ commit, state }, filters) {
-            try {
-                let normalizedFilters = {}
-
-                if (!Object.keys(filters).length) {
-                    commit('resetFilters')
-                } else {
-                    normalizedFilters = normalizeFilters(filters, (filters) => {
-                        typeof filters['category-id'] !== 'number' ? filters['category-id'] = '' : filters['category-id'];
-                    })
-
-                    commit('setFilters', normalizedFilters)
-                    console.log('normalizedFilters', normalizedFilters);
-                }
-
-                console.log('filters', filters);
-                const response = await axios.get(`/api/v1/products`, { params: state.filters })
-                commit('setProducts', response.data)
-                console.log(response.data);
-                return Object.keys(normalizedFilters).length ? true : false
+                dispatch('getProducts', state.filters)
             } catch (error) {
                 throw error
             }
