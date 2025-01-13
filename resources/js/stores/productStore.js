@@ -16,37 +16,31 @@ const productStore = createStore({
         setCategories(state, categories) {
             state.categories = categories
         },
-        // addNewProduct(state, product) {
-        //     state.products.data.push(product)
-        // }
     },
     actions: {
-        getProducts({ commit }) {
-            axios.get(`/api/v1/products`)
-                .then(response => {
-                    commit('setProducts', response.data)
-                })
-                .catch(error => {
-                    console.error(error)
-                })
+        async getProducts({ commit }) {
+            try {
+                const response = await axios.get(`/api/v1/products`)
+                commit('setProducts', response.data)
+            } catch (error) {
+                throw error
+            }
         },
-        getCategories({ commit }) {
-            axios.get(`/api/v1/categories`)
-                .then(response => {
-                    commit('setCategories', response.data)
-                })
-                .catch(error => {
-                    console.error(error)
-                })
+        async getCategories({ commit }) {
+            try {
+                const response = await axios.get(`/api/v1/categories`)
+                commit('setCategories', response.data)
+            } catch (error) {
+                throw error
+            }
         },
-        createProduct({ dispatch }, product) {
-            axios.post(`/api/v1/products`, product)
-                .then(() => {
-                    dispatch('getProducts')
-                })
-                .catch(error => {
-                    console.error(error)
-                })
+        async createProduct({ dispatch }, product) {
+            try {
+                await axios.post(`/api/v1/products`, product)
+                dispatch('getProducts')
+            } catch (error) {
+                throw error
+            }
         }
     }
 })
