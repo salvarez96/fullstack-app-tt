@@ -5,7 +5,6 @@
         <img class="product-image mb-2" :src="productImage" :alt="productName" />
         <h6>Precio: ${{ productPrice }}</h6>
         <p>{{ productDescription }}</p>
-        <button class="btn btn-primary">A button</button>
     </div>
 </template>
 

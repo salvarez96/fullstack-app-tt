@@ -41,6 +41,26 @@ const productStore = createStore({
             } catch (error) {
                 throw error
             }
+        },
+        async filterProducts({ commit }, filters) {
+            try {
+                typeof filters['category-id'] !== 'number' ? filters['category-id'] = '' : filters['category-id'];
+
+                const normalizedFilters = {}
+
+                for (const key in filters) {
+                    if (filters[key]) {
+                        normalizedFilters[key] = filters[key]
+                    }
+                }
+
+                console.log(normalizedFilters);
+                const response = await axios.get(`/api/v1/products`, { params: normalizedFilters })
+                commit('setProducts', response.data)
+                return Object.keys(normalizedFilters).length ? true : false
+            } catch (error) {
+                throw error
+            }
         }
     }
 })

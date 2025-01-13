@@ -1,27 +1,32 @@
 <template>
     <div class="filters-container">
-        <div class="category-filter">
-            <label for="category-filter">Filtrar por categoría</label>
-            <select class="form-select" id="category-filter" v-model="categoryFilter" aria-label="Default select example">
-                <option selected>Selecciona una categoría</option>
-                <option v-for="(category, index) in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
-            </select>
-        </div>
-        <div class="name-filter">
-            <label for="name-filter">Buscar por nombre</label>
-            <input type="text" class="form-control" id="name-filter" v-model="nameFilter" placeholder="nombre">
-        </div>
-        <div class="price-filter">
-            <label for="min-price">Buscar por precio</label>
-            <div class="price-form-container">
-                de
-                <input type="number" class="form-control price-form" id="min-price" v-model="minPrice" placeholder="min">
-                a
-                <input type="number" class="form-control price-form" id="max-price" v-model="maxPrice" placeholder="max">
+        <form @submit.prevent="handleApplyFilters">
+            <div class="category-filter">
+                <label for="category-filter">Filtrar por categoría</label>
+                <select class="form-select" id="category-filter" v-model="filters['category-id']" aria-label="Default select example">
+                    <option selected>Selecciona una categoría</option>
+                    <option v-for="(category, index) in categories" :key="category.id" :value="category.id">{{ category.name }}</option>
+                </select>
             </div>
-        </div>
+            <div class="name-filter">
+                <label for="name-filter">Buscar por nombre</label>
+                <input type="text" class="form-control" id="name-filter" v-model="filters['name']" placeholder="nombre">
+            </div>
+            <div class="price-filter">
+                <label for="min-price">Buscar por precio</label>
+                <div class="price-form-container">
+                    de
+                    <input type="number" class="form-control price-form" id="min-price" v-model="filters['min-price']" placeholder="min">
+                    a
+                    <input type="number" class="form-control price-form" id="max-price" v-model="filters['max-price']" placeholder="max">
+                </div>
+            </div>
+            <div class="form-buttons-container">
+                <button type="button" class="btn btn-danger form-buttons" @click="cleanFilters">Limpiar filtros</button>
+                <button type="submit" class="btn btn-primary form-buttons">Agregar filtros</button>
+            </div>
+        </form>
     </div>
-    <button type="button" class="btn btn-danger filters-cleaner" @click="cleanFilters">Limpiar filtros</button>
 </template>
 
 <script setup>
@@ -30,35 +35,60 @@ import { computed, onBeforeMount, ref } from 'vue';
 
 const store = useStore();
 const categories = computed(() => store.state.categories);
+const isFilterApplied = ref(false);
 
-const categoryFilter = ref('Selecciona una categoría');
-const nameFilter = ref('');
-const minPrice = ref('');
-const maxPrice = ref('');
+const filters = ref({
+    'category-id': 'Selecciona una categoría',
+    'name': '',
+    'min-price': '',
+    'max-price': ''
+});
 
 onBeforeMount(() => {
     store.dispatch('getCategories');
 });
 
-function cleanFilters() {
-    categoryFilter.value = 'Selecciona una categoría';
-    nameFilter.value = '';
-    minPrice.value = '';
-    maxPrice.value = '';
+async function cleanFilters() {
+    try {
+        if (isFilterApplied.value) {
+            await store.dispatch('getProducts');
+        }
+
+        filters.value['category-id'] = 'Selecciona una categoría';
+        filters.value['name'] = '';
+        filters.value['min-price'] = '';
+        filters.value['max-price'] = '';
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+async function handleApplyFilters() {
+    try {
+        const response = await store.dispatch('filterProducts', filters.value);
+        isFilterApplied.value = response;
+        console.log(store.state.products);
+    } catch (error) {
+        console.error(error);
+    }
 }
 
 </script>
 
 <style lang="scss">
 .filters-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 20px;
     margin-top: 30px;
 
-    label {
-        margin-bottom: 10px;
+    form {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 20px;
+
+        label {
+            margin-bottom: 10px;
+        }
     }
+
 }
 
 .price-form-container {
@@ -71,8 +101,11 @@ function cleanFilters() {
     }
 }
 
-.filters-cleaner {
-    margin: 0 auto;
-    margin-top: 20px;
+.form-buttons-container {
+    justify-self: center;
+
+    .form-buttons:nth-child(2) {
+        margin-left: 20px;
+    }
 }
 </style>

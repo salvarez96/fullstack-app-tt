@@ -2,8 +2,11 @@
     <div class="main-container container">
         <h1 class="text-center">Nuestros productos</h1>
         <Filters />
-        <button type="button" class="btn btn-primary new-product-form-button" @click="handleProductForm">+ Agregar producto</button>
         <CreateProduct ref="createProductForm" :categories="categories" />
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-success new-product-form-button" @click="handleProductForm">+ Agregar producto</button>
+        </div>
+        <h6>Mostrando {{ products.meta?.to ?? 0 }} de {{ products.meta?.total ?? 0 }} productos</h6>
         <div class="products-container">
             <ProductCard v-for="(product) in products.data"
                 :key="product.id"
