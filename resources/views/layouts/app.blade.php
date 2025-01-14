@@ -8,9 +8,7 @@
     @yield('head')
 </head>
 <body>
-    <div id="app">
-        @yield('content')
-    </div>
+    @yield('content')
     @yield('js')
 </body>
 </html>

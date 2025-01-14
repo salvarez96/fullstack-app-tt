@@ -8,7 +8,7 @@ import App from './vue/App.vue';
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 
-const app = createApp(ProductsPage);
+const app = createApp(App);
 app.component('products-page', ProductsPage);
 app.use(productStore);
 app.use(ElementPlus);

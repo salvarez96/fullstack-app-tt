@@ -2,5 +2,5 @@
 @section('title', 'Products')
 
 @section('content')
-    <products-page />
+    <div id="app" data-view="products-page"></div>
 @endsection
