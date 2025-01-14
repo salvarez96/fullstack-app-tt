@@ -1,6 +1,6 @@
 # Products viewer Fullstack App test project
 
-A small project that let's the user create and filter a list of products in a seamless and comprehensive way. It implements products management through API calls, pagination and filtering.
+A small project that lets the user create and filter a list of products in a seamless and comprehensive way. It implements products management through API calls, pagination and filtering.
 
 ![project overview](/public/readme-images/project-overview.png)
 
@@ -16,7 +16,7 @@ A small project that let's the user create and filter a list of products in a se
   - [Folder structure](#folder-structure)
   - [External libraries](#external-libraries)
 - [Entities](#entities)
-- [Instalation](#instalation)
+- [Installation](#installation)
     - [Prerequisites](#prerequisites)
     - [Steps](#steps)
     - [Access the Application](#access-the-application)
@@ -245,7 +245,7 @@ A one-to-many relationship between **category** and **product**:
 
 ![entity relationships](/public/readme-images/entity-relationships.png)
 
-# Instalation
+# Installation
 ### Prerequisites
 - Apache
 - PHP >= 8.2
