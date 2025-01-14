@@ -65,6 +65,12 @@ async function cleanFilters() {
         filters.value['max-price'] = '';
     } catch (error) {
         console.error(error);
+
+        ElNotification({
+            title: 'Error',
+            message: 'Error cargando productos al eliminar los filtros de búsqueda.',
+            type: 'error'
+        })
     }
 }
 
@@ -85,7 +91,7 @@ async function handleApplyFilters() {
         store.commit('resetFilters')
 
         ElNotification({
-            title: 'Error',
+            title: 'No hay productos',
             message: 'No hay productos que satisfagan los criterios de búsqueda ingresados.',
             type: 'error'
         })
