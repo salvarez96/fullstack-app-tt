@@ -257,8 +257,8 @@ A one-to-many relationship between **category** and **product**:
 ### Steps
 1.  **Clone the Repository**:
     ```
-    git  clone  https://github.com/your-username/your-repo.git
-    cd  your-repo
+    git  clone  https://github.com/salvarez96/fullstack-app-tt
+    cd  fullstack-app-tt
     ```
     
 2.  **Install PHP Dependencies**:
