@@ -288,17 +288,16 @@ A one-to-many relationship between **category** and **product**:
     ```
     php artisan db:seed
     ```
-9.   **Serve the Application**:
+9. **Serve the application**: 
     To correctly serve the application, both laravel and vite must be running in parallel. To do this, the easiest way is to execute the following in one terminal:
     ```
     php artisan serve
     ```
-
     and the following in another terminal:
-
     ```
     npm run dev
     ```
+    By doing so, both the laravel app will be running and Vite will be executing the Vue frontend.
 ### Access the Application
 
 -   Open your web browser and navigate to  `http://localhost:8000`.
@@ -430,7 +429,7 @@ All API endpoints are located in `api.php` file and managed through the app's co
             "description": string,
             "price": int,
             "image": string,
-            "category_id": 1,
+            "category_id": int,
             "updated_at": string,
             "created_at": string,
             "id": int
@@ -468,3 +467,13 @@ Categories only has the GET method, because the scope of the project is not work
     ```
 
 # Product filtering
+The application gives the possibility of filtering the products by _name_, _price_ range and _category_. This is done through **query params** sent to the API GET products route as follows:
+
+* **Price**: `/api/v1/products?min-price=10&max-price=100`: Products will be filtered by price range, ranging from 10 to 100.
+* **Name**: `/api/v1/products?name=shoe`: Products will be filtered by name, so only the products that contain the "show" name will be displayed. This filter is not case sensitive.
+* **Category**: `/api/v1/products?category-id=3`: Products will be filtered by category, so all the products that belong to the category with id 5 will be displayed.
+
+Also, because Laravel pagination system facilitates query params to load different pages, pagination is also done through query params:
+* **Page**: `/api/v1/products?page=3`: If there's more than 30 products, the last 10 products will be displayed if filtering to page 3.
+
+The advantage of working with query params is that all the filters can work simultaneosly and also, taking advantage of the API approach and Vue's reactive system, filtering can be done dynamically.
