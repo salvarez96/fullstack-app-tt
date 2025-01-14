@@ -19,9 +19,6 @@
                         <input type="number" v-model="newProduct.price" class="form-control" id="product-price" placeholder="Precio" required>
                         <label for="product-description">Descripción</label>
                         <textarea class="form-control" v-model="newProduct.description" id="product-description" rows="3" required></textarea>
-                        <div class="alert alert-danger" ref="alert" role="alert">
-                            Hubo un error al crear el nuevo producto, intenta de nuevo más tarde. Código de error: {{ errorCode }}
-                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="closeModal">Cerrar</button>
@@ -37,6 +34,7 @@
 import bootstrap from 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import { ref } from 'vue';
 import { useStore } from 'vuex';
+import { ElNotification } from 'element-plus'
 
 const store = useStore();
 const toggleSendButton = ref(false);
@@ -82,11 +80,11 @@ function openModal() {
 async function createProduct() {
     try {
         if (newProduct.value.category_id === 'Selecciona una categoría') {
-            alert.value.style.display = 'block'
-            alert.value.innerText = 'Selecciona una categoría'
-            setTimeout(() => {
-                alert.value.style.display = 'none';
-            }, 5000)
+            ElNotification({
+                title: 'Falta categoría',
+                message: 'Selecciona una categoría para el nuevo producto.',
+                type: 'warning'
+            })
             return
         }
 
@@ -94,19 +92,22 @@ async function createProduct() {
         console.log(newProduct.value);
         await store.dispatch('createProduct', newProduct.value);
 
+        ElNotification({
+            title: 'Éxito',
+            message: 'El producto fue creado exitosamente.',
+            type: 'success'
+        })
+
         closeModal();
         toggleSendButton.value = false;
     } catch (error) {
-        console.log('error:' , error);
         console.error(error);
-        errorCode.value = error.response.status;
-        alert.value.style.display = 'block';
-        toggleSendButton.value = false;
 
-        setTimeout(() => {
-            errorCode.value = 0;
-            alert.value.style.display = 'none';
-        }, 5000);
+        ElNotification({
+            title: 'Error',
+            message: 'No se pudo crear el producto.',
+            type: 'error'
+        })
     }
 }
 
@@ -117,9 +118,5 @@ async function createProduct() {
         label {
             margin: 10px 0;
         }
-    }
-    .alert {
-        display: none;
-        margin-top: 10px;
     }
 </style>
