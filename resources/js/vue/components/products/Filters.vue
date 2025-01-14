@@ -33,6 +33,7 @@
 import { useStore } from 'vuex';
 import { computed, onBeforeMount, ref } from 'vue';
 import handleUrlPagination from '@helpers/handleUrlPagination'
+import { ElNotification } from 'element-plus'
 
 const store = useStore();
 const categories = computed(() => store.state.categories);
@@ -80,6 +81,14 @@ async function handleApplyFilters() {
         console.log(store.state.products);
     } catch (error) {
         console.error(error);
+        cleanFilters()
+        store.commit('resetFilters')
+
+        ElNotification({
+            title: 'Error',
+            message: 'No hay productos que satisfagan los criterios de búsqueda ingresados.',
+            type: 'error'
+        })
     }
 }
 
