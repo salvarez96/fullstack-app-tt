@@ -2,6 +2,8 @@
 
 A small project that let's the user create and filter a list of products in a seamless and comprehensive way. It implements products management through API calls, pagination and filtering.
 
+![project overview](/public/readme-images/project-overview.png)
+
 # Contents
 - [Products viewer Fullstack App test project](#products-viewer-fullstack-app-test-project)
 - [Contents](#contents)
@@ -241,7 +243,7 @@ All entities are going to have a `created_at` and `updated_at` attributes, which
 **Relationships**:
 A one-to-many relationship between **category** and **product**:
 
-![alt text](/public/readme-images/image.png)
+![entity relationships](/public/readme-images/entity-relationships.png)
 
 # Instalation
 ### Prerequisites
