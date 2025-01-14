@@ -32,14 +32,25 @@ import ProductCard from '@components/products/ProductCard.vue';
 import Filters from '@components/products/Filters.vue';
 import CreateProduct from '@components/products/CreateProduct.vue';
 import Pagination from '@components/general/Pagination.vue'
+import { ElNotification } from 'element-plus'
 
 const store = useStore();
 const products = computed(() => store.state.products);
 const categories = computed(() => store.state.categories);
 const createProductForm = ref(null);
 
-onBeforeMount(() => {
-    store.dispatch('getCategories');
+onBeforeMount(async () => {
+    try {
+        await store.dispatch('getCategories');
+    } catch (error) {
+        console.error(error)
+
+        ElNotification({
+            title: 'Error',
+            message: 'Error al obtener las categorías.',
+            type: 'error'
+        })
+    }
 });
 
 function handleProductForm() {
