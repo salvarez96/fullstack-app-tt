@@ -12,6 +12,7 @@ A small project that let's the user create and filter a list of products in a se
     - [Backend](#backend)
     - [Frontend](#frontend)
   - [Folder structure](#folder-structure)
+  - [External libraries](#external-libraries)
 - [Entities](#entities)
 - [Instalation](#instalation)
     - [Prerequisites](#prerequisites)
@@ -206,6 +207,16 @@ root/
 └── ...
 
 ``` 
+
+## External libraries
+Here is a list of some external libraries with an explanation of why they were used:
+* **Axios**: API client used in the frontend. Easy to use and implement.
+* **Sass**: CSS preprocessor that makes writing styles simpler and gives more flexibility than plain CSS.
+* **Bootstrap**: CSS library that comes with pre-made components and styles, saving a lot of time when putting together the app styles.
+* **Element-plus**: Vue component library with lots of pre-made components that are easy to use. This was used to create notifications during API calls.
+* **Vue**: Frontend framework that has pre-made Laravel integration. Used to componetize the frontend and to add dynamism.
+* **Vuex**: One of Vue's state management systems, which integrates easily with the project. Used to handle all API calls from one place.
+
 # Entities
 The project has only two entities: **products** and **categories**.
 **Categories** were separated into an entity because a single category can have many products.
@@ -214,18 +225,18 @@ All entities are going to have a `created_at` and `updated_at` attributes, which
 
 **Products**:
 ```
-id: primary key
-name: varchar
-description: text
-price: decimal
-category_id: foreign key
-image: varchar
+    id: primary key
+    name: varchar
+    description: text
+    price: decimal
+    category_id: foreign key
+    image: varchar
 ```
 **Categories**:
 ```
-id: primary key
-name: varchar
-description: text
+    id: primary key
+    name: varchar
+    description: text
 ```
 **Relationships**:
 A one-to-many relationship between **category** and **product**:
@@ -316,36 +327,36 @@ All API endpoints are located in `api.php` file and managed through the app's co
     {
         "data": [
             {
-                "id": int,
-                "name": string,
-                "description": string,
-                "price": string,
-                "image": string,
-                "category_id": int
+                "id": "int",
+                "name": "string",
+                "description": "string",
+                "price": "string",
+                "image": "string",
+                "category_id": "int"
             },
             { ... },
         ],
         "links": {
-            "first": string,
-            "last": string,
-            "prev": string,
-            "next": string
+            "first": "string",
+            "last": "string",
+            "prev": "string",
+            "next": "string"
         },
         "meta": {
-            "current_page": int,
-            "from": int,
-            "last_page": int,
+            "current_page": "int",
+            "from": "int",
+            "last_page": "int",
             "links": [
                 {
-                    "url": string,
-                    "label": string,
-                    "active": bool
+                    "url": "string",
+                    "label": "string",
+                    "active": "bool"
                 },
             ],
-            "path": string,
-            "per_page": int,
-            "to": int,
-            "total": int
+            "path": "string",
+            "per_page": "int",
+            "to": "int",
+            "total": "int"
         }
     }
     ```
@@ -355,10 +366,10 @@ All API endpoints are located in `api.php` file and managed through the app's co
 - Request body:
     ```json
     {
-        "name": string,
-        "description": string,
-        "price": int,
-        "category_id": int
+        "name": "string",
+        "description": "string",
+        "price": "int",
+        "category_id": "int"
     }
     ```
 - Response
@@ -367,14 +378,14 @@ All API endpoints are located in `api.php` file and managed through the app's co
         "code": 201,
         "message": "Product created successfully",
         "data": {
-            "name": string,
-            "description": string,
-            "price": int,
-            "image": string,
+            "name": "string",
+            "description": "string",
+            "price": "int",
+            "image": "string",
             "category_id": 1,
-            "updated_at": string,
-            "created_at": string,
-            "id": int
+            "updated_at": "string",
+            "created_at": "string",
+            "id": "int"
         }
     }
     ```
@@ -384,10 +395,10 @@ All API endpoints are located in `api.php` file and managed through the app's co
 - Request body:
     ```json
     {
-        "name": string,
-        "description": string,
-        "price": int,
-        "category_id": int
+        "name": "string",
+        "description": "string",
+        "price": "int",
+        "category_id": "int"
     }
     ```
 - Response
@@ -396,14 +407,14 @@ All API endpoints are located in `api.php` file and managed through the app's co
         "code": 201,
         "message": "Product created successfully",
         "data": {
-            "name": string,
-            "description": string,
-            "price": int,
-            "image": string,
+            "name": "string",
+            "description": "string",
+            "price": "int",
+            "image": "string",
             "category_id": 1,
-            "updated_at": string,
-            "created_at": string,
-            "id": int
+            "updated_at": "string",
+            "created_at": "string",
+            "id": "int"
         }
     }
     ```
@@ -413,10 +424,10 @@ All API endpoints are located in `api.php` file and managed through the app's co
 - Request body:
     ```json
     {
-        "name": string (optional),
-        "description": string (optional),
-        "price": int (optional),
-        "category_id": int (optional)
+        "name": "string",
+        "description": "string",
+        "price": "int",
+        "category_id": "int" 
     }
     ```
 - Response
@@ -425,14 +436,14 @@ All API endpoints are located in `api.php` file and managed through the app's co
         "code": 200,
         "message": "Product updated successfully",
         "data": {
-            "name": string,
-            "description": string,
-            "price": int,
-            "image": string,
-            "category_id": int,
-            "updated_at": string,
-            "created_at": string,
-            "id": int
+            "name": "string",
+            "description": "string",
+            "price": "int",
+            "image": "string",
+            "category_id": "int",
+            "updated_at": "string",
+            "created_at": "string",
+            "id": "int"
         }
     }
     ```
@@ -456,11 +467,11 @@ Categories only has the GET method, because the scope of the project is not work
     ```json
     [
         {
-            "id": int,
-            "name": string,
-            "description": string,
-            "created_at": string,
-            "updated_at": string
+            "id": "int",
+            "name": "string",
+            "description": "string",
+            "created_at": "string",
+            "updated_at": "string"
         },
         { ... }
     ]
